@@ -1,25 +1,25 @@
 {
-  "name": "@kaosdlanor/vue-reactivity",
-  "version": "1.0.0",
-	"description": "A simple Vue 3 reactivity library",
-  "main": "dist/index.js",
-	"scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "prepublishOnly": "npm run build"
-	},
-  "author": "Daniel Olivier (KaoSDlanor@gmail.com)",
-	"repository": "https://github.com/KaoSDlanor/vue-reactivity",
-  "license": "MIT",
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
-	"peerDependencies": {
-		"vue": "^3"
-	},
-	"devDependencies": {
-		"prettier": "^3.0.3",
-    "typescript": "^5.2.2",
-    "vue": "^3.3.7"
-	}
+ "name": "@kaosdlanor/vue-reactivity",
+ "version": "1.0.1",
+ "description": "A simple Vue 3 reactivity library",
+ "main": "dist/index.js",
+ "scripts": {
+  "test": "echo \"Error: no test specified\" && exit 1",
+  "build": "tsc",
+  "prepublishOnly": "npm run build"
+ },
+ "author": "Daniel Olivier (KaoSDlanor@gmail.com)",
+ "repository": "https://github.com/KaoSDlanor/vue-reactivity",
+ "license": "MIT",
+ "publishConfig": {
+  "registry": "https://registry.npmjs.org/"
+ },
+ "peerDependencies": {
+  "vue": "^3"
+ },
+ "devDependencies": {
+  "prettier": "^3.0.3",
+  "typescript": "^5.2.2",
+  "vue": "^3.3.7"
+ }
 }

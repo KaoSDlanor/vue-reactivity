@@ -1,6 +1,6 @@
 {
  "name": "@kaosdlanor/vue-reactivity",
- "version": "1.0.1",
+ "version": "1.0.2",
  "description": "A simple Vue 3 reactivity library",
  "main": "dist/index.js",
  "scripts": {

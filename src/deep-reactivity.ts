@@ -1,4 +1,10 @@
-import { Ref, effectScope, getCurrentScope, watchEffect } from 'vue';
+import {
+	Ref,
+	computed,
+	effectScope,
+	onScopeDispose,
+	watch,
+} from 'vue';
 
 /**
  * Creates a new effect scope for each key in an object, and runs a handler function for each key. Use this to more efficiently manage reactivity in deeply nested objects.
@@ -9,34 +15,33 @@ export const useScopePerKey = <O extends object>(
 	input: Ref<O>,
 	handler: (key: keyof O) => unknown
 ) => {
-	const currentScope = getCurrentScope() ?? effectScope();
+	const parentScope = effectScope();
 	const childScopes = new Map<keyof O, ReturnType<typeof effectScope>>();
 
-	const stop = currentScope.run(() => {
-		return watchEffect(() => {
-			const inputKeys = Object.keys(input.value) as (keyof O)[];
-			const runningKeys = Array.from(childScopes.keys());
+	parentScope.run(() => {
+		const inputKeys = computed(() => Object.keys(input.value) as (keyof O)[]);
+		watch(
+			inputKeys,
+			(inputKeys) => {
+				const keysToAdd = inputKeys.filter((key) => !childScopes.has(key));
 
-			const keysToAdd = inputKeys.filter((key) => !runningKeys.includes(key));
-			const keysToRemove = runningKeys.filter(
-				(key) => !inputKeys.includes(key)
-			);
+				for (const key of keysToAdd) {
+					const newScope = effectScope();
+					childScopes.set(key, newScope);
+					newScope!.run(() => {
+						handler(key);
 
-			for (const key of keysToRemove) {
-				if (!childScopes.has(key)) continue;
-				childScopes.get(key)!.stop();
-				childScopes.delete(key);
-			}
-
-			for (const key of keysToAdd) {
-				if (childScopes.has(key)) continue;
-				childScopes.set(key, effectScope());
-				childScopes.get(key)!.run(() => {
-					handler(key);
-				});
-			}
-		});
+						onScopeDispose(() => {
+							if (!childScopes.has(key)) return;
+							childScopes.get(key)!.stop();
+							childScopes.delete(key);
+						});
+					});
+				}
+			},
+			{ immediate: true, flush: 'sync' }
+		);
 	})!;
 
-	return stop;
+	return () => parentScope.stop();
 };
